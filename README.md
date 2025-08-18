@@ -1,12 +1,53 @@
-# React + Vite
+# ICteca - Biblioteca Online
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este projeto é uma aplicação web desenvolvida como parte da avaliação da disciplina **Redes II**. Ele integra um **front-end em React** com um **back-end em .NET Core** (Outro Repositório), onde usuários podem cadastrar livros, adicionar autores e buscar informações sobre eles por meio de uma API REST.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Funcionalidades
 
-## Expanding the ESLint configuration
+### Usuário
+- Cadastro de novos usuários
+- Login e autenticação
+- Visualização de perfil e status de conexão
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Curador (Administrador)
+- Adicionar livros com título, descrição e autor
+- Buscar autores existentes
+- Adicionar novos autores com biografia/descrição
+
+### Pesquisa
+- Buscar livros por nome
+- Exibição dos resultados em cards com título, autor e descrição
+
+---
+
+## Tecnologias Utilizadas
+
+- **Front-end:** React, CSS Modules
+- **Back-end:** .NET Core Web API
+- **Banco de Dados:** MySQL, PostgreSQL ou outro relacional
+- **Containerização:** Docker e Docker Compose
+- **Controle de Versão:** Git / GitHub
+
+---
+
+## Estrutura do Projeto
+
+### Front-end
+- `Home.jsx` → Página principal, busca de livros
+- `LoginRegister.jsx` → Gerenciamento de login e cadastro de usuários
+- `Curator.jsx` → Curadoria de livros e autores
+- `Navegacao.jsx` → Menu de navegação entre páginas
+- `*.css` → Estilização de cada componente
+
+### Back-end
+- API em **.NET Core** que expõe endpoints para:
+  - `POST /Book/add` → Adicionar livro
+  - `GET /Book/search` → Buscar livros por nome
+  - `POST /Author/add` → Adicionar autor
+  - `GET /Author/search` → Buscar autores por nome
+  - `POST /register` → Cadastro de usuários
+  - `POST /login` → Login de usuários
+
+---
