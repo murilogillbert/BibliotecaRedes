@@ -26,7 +26,7 @@ Este projeto é uma aplicação web desenvolvida como parte da avaliação da di
 
 - **Front-end:** React, CSS Modules
 - **Back-end:** .NET Core Web API
-- **Banco de Dados:** MySQL, PostgreSQL ou outro relacional
+- **Banco de Dados:** PostgreSQL
 - **Containerização:** Docker e Docker Compose
 - **Controle de Versão:** Git / GitHub
 
