@@ -1,106 +1,124 @@
-import { useState } from "react"
-import './Curator.css'
+import { useState } from "react";
+import './Curator.css';
 
 export default function Curator() {
   // Estados do livro
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [authorName, setAuthorName] = useState("")
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [authorName, setAuthorName] = useState("");
 
   // Estados do autor
-  const [authorSearch, setAuthorSearch] = useState("")
-  const [authorResult, setAuthorResult] = useState(null)
-  const [newAuthorName, setNewAuthorName] = useState("")
-  const [newAuthorDesc, setNewAuthorDesc] = useState("")
+  const [authorSearch, setAuthorSearch] = useState("");
+  const [authorResult, setAuthorResult] = useState(null);
+  const [newAuthorName, setNewAuthorName] = useState("");
+  const [newAuthorDesc, setNewAuthorDesc] = useState("");
 
   // Estados de loading
-  const [isAddingBook, setIsAddingBook] = useState(false)
-  const [isSearchingAuthor, setIsSearchingAuthor] = useState(false)
-  const [isAddingAuthor, setIsAddingAuthor] = useState(false)
+  const [isAddingBook, setIsAddingBook] = useState(false);
+  const [isSearchingAuthor, setIsSearchingAuthor] = useState(false);
+  const [isAddingAuthor, setIsAddingAuthor] = useState(false);
+
+  // Recupera token do localStorage
+  const token = localStorage.getItem("token");
 
   // POST Book/add
   const handleAddBook = async (e) => {
-    e.preventDefault()
-    setIsAddingBook(true)
-    
+    e.preventDefault();
+    setIsAddingBook(true);
+
     try {
       const response = await fetch("http://localhost:8080/Book/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ title, description, authorName })
-      })
+      });
 
       if (response.ok) {
-        alert("Livro adicionado com sucesso!")
-        setTitle("")
-        setDescription("")
-        setAuthorName("")
+        alert("Livro adicionado com sucesso!");
+        setTitle("");
+        setDescription("");
+        setAuthorName("");
+      } else if (response.status === 401) {
+        alert("Não autorizado. Faça login novamente.");
       } else {
-        alert("Erro ao adicionar livro")
+        alert("Erro ao adicionar livro");
       }
     } catch (error) {
-      console.error("Erro ao adicionar livro:", error)
-      alert("Erro de conexão. Tente novamente.")
+      console.error("Erro ao adicionar livro:", error);
+      alert("Erro de conexão. Tente novamente.");
     } finally {
-      setIsAddingBook(false)
+      setIsAddingBook(false);
     }
-  }
+  };
 
   // GET Author/search
   const handleSearchAuthor = async (e) => {
-    e.preventDefault()
-    setIsSearchingAuthor(true)
-    
+    e.preventDefault();
+    setIsSearchingAuthor(true);
+
     try {
       const response = await fetch(
         `http://localhost:8080/Author/search?Name=${encodeURIComponent(authorSearch)}`,
         {
           method: "GET",
-          headers: { "Content-Type": "application/json" }
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
         }
-      )
+      );
 
-      const data = await response.json()
+      const data = await response.json();
       if (response.ok) {
-        setAuthorResult(data)
+        setAuthorResult(data);
+      } else if (response.status === 401) {
+        alert("Não autorizado. Faça login novamente.");
       } else {
-        setAuthorResult(null)
-        alert("Autor não encontrado")
+        setAuthorResult(null);
+        alert("Autor não encontrado");
       }
     } catch (error) {
-      console.error("Erro ao buscar autor:", error)
-      alert("Erro de conexão. Tente novamente.")
+      console.error("Erro ao buscar autor:", error);
+      alert("Erro de conexão. Tente novamente.");
     } finally {
-      setIsSearchingAuthor(false)
+      setIsSearchingAuthor(false);
     }
-  }
+  };
 
   // POST Author/add
   const handleAddAuthor = async (e) => {
-    e.preventDefault()
-    setIsAddingAuthor(true)
-    
+    e.preventDefault();
+    setIsAddingAuthor(true);
+
     try {
       const response = await fetch("http://localhost:8080/Author/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ name: newAuthorName, description: newAuthorDesc })
-      })
+      });
 
       if (response.ok) {
-        alert("Autor adicionado com sucesso!")
-        setNewAuthorName("")
-        setNewAuthorDesc("")
+        alert("Autor adicionado com sucesso!");
+        setNewAuthorName("");
+        setNewAuthorDesc("");
+      } else if (response.status === 401) {
+        alert("Não autorizado. Faça login novamente.");
       } else {
-        alert("Erro ao adicionar autor")
+        alert("Erro ao adicionar autor");
       }
     } catch (error) {
-      console.error("Erro ao adicionar autor:", error)
-      alert("Erro de conexão. Tente novamente.")
+      console.error("Erro ao adicionar autor:", error);
+      alert("Erro de conexão. Tente novamente.");
     } finally {
-      setIsAddingAuthor(false)
+      setIsAddingAuthor(false);
     }
-  }
+  };
 
   return (
     <div className="curator-container">
@@ -248,5 +266,5 @@ export default function Curator() {
         </section>
       </div>
     </div>
-  )
+  );
 }

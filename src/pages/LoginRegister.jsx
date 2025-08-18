@@ -1,97 +1,110 @@
-import { useState } from "react"
-import './LoginRegister.css'
+import { useState, useEffect } from "react";
+import './LoginRegister.css';
 
 function LoginRegister() {
-  const [activeTab, setActiveTab] = useState('login') // controla qual aba está ativa
+  const [activeTab, setActiveTab] = useState('login'); // controla qual aba está ativa
   const [registerForm, setRegisterForm] = useState({
     name: "",
     email: "",
     password: ""
-  })
+  });
 
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: ""
-  })
+  });
 
-  const [user, setUser] = useState(null) // guarda dados do usuário logado
-  const [isLoading, setIsLoading] = useState(false)
+  const [user, setUser] = useState(null); // guarda dados do usuário logado
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Mantém usuário logado mesmo após refresh
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   // Atualiza campos do cadastro
   const handleRegisterChange = (e) => {
-    setRegisterForm({ ...registerForm, [e.target.name]: e.target.value })
-  }
+    setRegisterForm({ ...registerForm, [e.target.name]: e.target.value });
+  };
 
   // Atualiza campos do login
   const handleLoginChange = (e) => {
-    setLoginForm({ ...loginForm, [e.target.name]: e.target.value })
-  }
+    setLoginForm({ ...loginForm, [e.target.name]: e.target.value });
+  };
 
   // Envia cadastro
   const handleRegisterSubmit = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
-    
+    e.preventDefault();
+    setIsLoading(true);
+
     try {
       const response = await fetch("http://localhost:8080/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(registerForm)
-      })
+      });
 
-      const data = await response.json()
-      console.log("Resposta do registro:", data)
+      const data = await response.json();
+      console.log("Resposta do registro:", data);
 
       if (response.ok) {
-        alert("Usuário registrado com sucesso!")
-        setRegisterForm({ name: "", email: "", password: "" })
-        setActiveTab('login') // muda para aba de login
+        alert("Usuário registrado com sucesso!");
+        setRegisterForm({ name: "", email: "", password: "" });
+        setActiveTab('login'); // muda para aba de login
       } else {
-        alert("Erro: " + data.message)
+        alert("Erro: " + data.message);
       }
     } catch (error) {
-      console.error("Erro no cadastro:", error)
-      alert("Erro de conexão. Tente novamente.")
+      console.error("Erro no cadastro:", error);
+      alert("Erro de conexão. Tente novamente.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   // Envia login (POST)
   const handleLoginSubmit = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
-    
+    e.preventDefault();
+    setIsLoading(true);
+
     try {
       const response = await fetch("http://localhost:8080/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginForm)
-      })
+      });
 
-      const data = await response.json()
-      console.log("Resposta do login:", data)
+      const data = await response.json();
+      console.log("Resposta do login:", data);
 
       if (response.ok) {
-        setUser(data) // guarda user e token
-        alert(`Bem-vindo, ${data.name}!`)
-        setLoginForm({ email: "", password: "" })
+        setUser(data); // guarda user
+        localStorage.setItem("user", JSON.stringify(data)); // salva usuário
+        localStorage.setItem("token", data.tokens?.accessToken); // salva JWT
+        alert(`Bem-vindo, ${data.name}!`);
+        setLoginForm({ email: "", password: "" });
       } else {
-        alert("Erro: " + data.message)
+        alert("Erro: " + data.message);
       }
     } catch (error) {
-      console.error("Erro no login:", error)
-      alert("Erro de conexão. Tente novamente.")
+      console.error("Erro no login:", error);
+      alert("Erro de conexão. Tente novamente.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
+  // Logout
   const handleLogout = () => {
-    setUser(null)
-    setLoginForm({ email: "", password: "" })
-    setRegisterForm({ name: "", email: "", password: "" })
-  }
+    setUser(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setLoginForm({ email: "", password: "" });
+    setRegisterForm({ name: "", email: "", password: "" });
+  };
 
   // Se usuário está logado, mostra perfil
   if (user) {
@@ -122,7 +135,7 @@ function LoginRegister() {
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -232,7 +245,7 @@ function LoginRegister() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default LoginRegister
+export default LoginRegister;

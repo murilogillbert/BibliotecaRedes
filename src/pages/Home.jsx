@@ -1,43 +1,51 @@
-import { useState } from "react"
-import './Home.css'
+import { useState } from "react";
+import './Home.css';
 
 function Home() {
-  const [bookName, setBookName] = useState("")
-  const [books, setBooks] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [bookName, setBookName] = useState("");
+  const [books, setBooks] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Recupera token do localStorage
+  const token = localStorage.getItem("token");
 
   const handleBookNameChange = (e) => {
-    setBookName(e.target.value)
-  }
+    setBookName(e.target.value);
+  };
 
   const handleBookSubmit = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
-    
+    e.preventDefault();
+    setIsLoading(true);
+
     try {
       const response = await fetch(
         `http://localhost:8080/Book/search?Name=${encodeURIComponent(bookName)}`,
         {
           method: "GET",
-          headers: { "Content-Type": "application/json" }
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
         }
-      )
+      );
 
-      const data = await response.json()
-      console.log("Resposta da API:", data)
+      const data = await response.json();
+      console.log("Resposta da API:", data);
 
       if (response.ok) {
-        setBooks(data.booksList) // atualiza estado com os livros recebidos
+        setBooks(data); // CORREÇÃO: usar o array retornado diretamente
+      } else if (response.status === 401) {
+        alert("Não autorizado. Faça login novamente.");
       } else {
-        alert("Erro ao buscar livros")
+        alert("Erro ao buscar livros");
       }
     } catch (error) {
-      console.error("Erro ao buscar livros:", error)
-      alert("Erro de conexão. Tente novamente.")
+      console.error("Erro ao buscar livros:", error);
+      alert("Erro de conexão. Tente novamente.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="home-container">
@@ -99,7 +107,7 @@ function Home() {
         ) : null}
       </section>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
