@@ -6,7 +6,7 @@ function Navegacao() {
     <nav className="navegacao">
       <div className="nav-container">
         <div className="logo">
-          <Link to="/" className="logo-link">MeuApp</Link>
+          <Link to="/" className="logo-link">ICteca</Link>
         </div>
         <ul className="nav-list">
           <li className="nav-item">
